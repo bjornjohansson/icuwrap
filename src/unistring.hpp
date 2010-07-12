@@ -18,11 +18,9 @@ class UniString
 {
 public:
 	UniString();
-	/*
-	 * The input string is assumed to be UTF-8, if it can not properly
-	 * be read as UTF-8 it will be considered as ISO-8859-1
-	 */
+	// Read an input string and attempt to detect its encoding
 	UniString(const std::string& input);
+	// Read an input string using the supplied encoding
 	UniString(const std::string& input, const std::string& encoding);
 
 	std::string ToUtf8() const;

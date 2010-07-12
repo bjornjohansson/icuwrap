@@ -1,8 +1,7 @@
 #include "unistring.hpp"
 #include "uconverter.hpp"
-#include "ucharsetdetector.hpp"
-
-#include <unicode/ucnv.h>
+#include "charsetdetector.hpp"
+#include "charsetdetectorexception.hpp"
 
 #include <vector>
 #include <string>
@@ -10,44 +9,38 @@
 
 #include <iostream>
 
+#include <unicode/ucnv.h>
+
 UniString::UniString()
 {
 }
 
 UniString::UniString(const std::string& input)
 {
-	IcuWrap::UCharsetDetector detector(input);
-
-	if (!detector.IsValid())
-		throw std::exception();
-
-	const IcuWrap::UCharsetDetector::CharsetCollection& sets
-		= detector.GetAllCharsetNames();
-
-	IcuWrap::UCharsetDetector::CharsetIterator utf8 =
-		std::find(sets.begin(), sets.end(), "UTF-8");
-	IcuWrap::UCharsetDetector::CharsetIterator iso88591
-		= std::find(sets.begin(), sets.end(), "ISO-8859-1");
-	
-	// By default we use ISO-8859-1
-	detectedCharset_ = "ISO-8859-1";
-	// If we find UTF-8 but not ISO-8859-1 then we go with UTF-8
-	if (utf8 != sets.end() && iso88591 != sets.end())
+	try
 	{
-		std::cout<<"Detecting '"<<input<<"'"<<std::endl;
-		std::cout<<"Auto detection gives: "<<detector.GetCharsetName()
-		         <<std::endl;
-		std::cout<<"UTF-8 confidence: "<<utf8->GetConfidence()<<std::endl;
-		std::cout<<"ISO-8859-1 confidence: "<<iso88591->GetConfidence()
-		         <<std::endl;
+		CharsetDetector detector(input);
+
+		const CharsetDetector::CharsetCollection& sets
+			= detector.GetAllCharsetNames();
+		
+		CharsetDetector::CharsetIterator utf8 =
+			std::find(sets.begin(), sets.end(), "UTF-8");
+		CharsetDetector::CharsetIterator iso88591
+			= std::find(sets.begin(), sets.end(), "ISO-8859-1");
+		
+		// By default we use ISO-8859-1
+		detectedCharset_ = "ISO-8859-1";
+		// If we find UTF-8 but not ISO-8859-1 then we go with UTF-8
+		if (utf8 != sets.end() && iso88591 == sets.end())
+		{
+			detectedCharset_ = "UTF-8";
+		}
 	}
-
-
-	if (utf8 != sets.end() && iso88591 == sets.end())
+	catch (const CharsetDetectorException& e)
 	{
-		detectedCharset_ = "UTF-8";
+		throw UniStringException(e.GetMessage());
 	}
-
 	ConvertToCharset(input);
 }
 

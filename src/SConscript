@@ -1,5 +1,6 @@
 sourceFiles = ['globalicu.cpp'
-              ,'ucharsetdetector.cpp'
+              ,'charsetdetector.cpp'
+              ,'charsetdetectorimpl.cpp'
               ,'uconverter.cpp'
               ,'unistring.cpp'
               ]

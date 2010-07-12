@@ -45,7 +45,7 @@ void UniStringTest::TestDetection()
 	CPPUNIT_ASSERT_EQUAL(utf8, fromLatin1.ToUtf8());
 
 	UniString fromUtf8(utf8);
-//	CPPUNIT_ASSERT_EQUAL(std::string("UTF-8"), fromUtf8.GetDetectedCharset());
+	CPPUNIT_ASSERT_EQUAL(std::string("UTF-8"), fromUtf8.GetDetectedCharset());
 	CPPUNIT_ASSERT_EQUAL(utf8, fromUtf8.ToUtf8());
 	
 	latin1 = "RÄVEN RASKAR ÖVER DEN BLÅ ISEN.";
@@ -56,5 +56,4 @@ void UniStringTest::TestDetection()
 
 	fromUtf8 = UniString(utf8);
 	CPPUNIT_ASSERT_EQUAL(utf8, fromUtf8.ToUtf8());
-	
 }
