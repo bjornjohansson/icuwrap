@@ -1,0 +1,33 @@
+sourceFiles = ['globalicu.cpp'
+              ,'ucharsetdetector.cpp'
+              ,'uconverter.cpp'
+              ,'unistring.cpp'
+              ]
+
+botFiles = [
+           ]
+
+testFiles = ['tests/run.cpp'
+            ,'tests/unistring_test.cpp'
+            ]
+
+libFiles = ['chardet'
+           ]
+
+testLibFiles = ['cppunit'
+               ]
+
+Import('env')
+
+base_objects = env.StaticObject(sourceFiles)
+
+env.Library('icuwrap', botFiles+base_objects, LIBS=libFiles)
+
+tests = env.Program('unit_tests', testFiles+base_objects, LIBS=libFiles+testLibFiles)
+
+def runUnitTest(env, target, source):
+    import subprocess
+    app = str(source[0].abspath)
+    if not subprocess.call(app):
+       open(str(target[0]), 'w').write("PASSED\n")
+Command("test.passed", 'unit_tests',runUnitTest)

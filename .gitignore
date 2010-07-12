@@ -1,1 +1,4 @@
 *~
+build
+.sconsign.dblite
+custom.py
