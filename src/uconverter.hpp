@@ -4,6 +4,7 @@
 
 #include <unicode/ucnv_err.h>
 #include <unicode/uenum.h>
+#include <unicode/unistr.h>
 
 namespace IcuWrap
 {
@@ -16,6 +17,8 @@ namespace IcuWrap
 
 		::UConverter* operator*();
 
+		std::string ConvertUnicodeString(const UnicodeString& str);
+		
 		bool IsValid() const;
 		std::string GetError() const;
 	private:

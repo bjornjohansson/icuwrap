@@ -2,7 +2,7 @@
 
 #include <unicode/ucnv.h>
 
-#include <iostream>
+#include <vector>
 
 IcuWrap::UConverter::UConverter(const std::string& codePage)
 	: converter_(0)
@@ -32,4 +32,15 @@ bool IcuWrap::UConverter::IsValid() const
 std::string IcuWrap::UConverter::GetError() const
 {
 	return u_errorName(errorCode_);
+}
+
+std::string IcuWrap::UConverter::ConvertUnicodeString(const UnicodeString& str)
+{
+	int32_t size = UCNV_GET_MAX_BYTES_FOR_STRING(str.length(),
+	                                             ucnv_getMaxCharSize(converter_));
+	std::vector<char> buffer(size);
+	int32_t length = ucnv_fromUChars(converter_, &buffer[0], buffer.size(),
+	                                 str.getBuffer(), str.length(),
+	                                 &errorCode_);
+	return std::string(&buffer[0], length);
 }
