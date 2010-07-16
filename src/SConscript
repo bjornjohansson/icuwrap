@@ -10,6 +10,7 @@ botFiles = [
 
 testFiles = ['tests/run.cpp'
             ,'tests/converter_test.cpp'
+            ,'tests/charsetdetector_test.cpp'
             ]
 
 libFiles = ['chardet'

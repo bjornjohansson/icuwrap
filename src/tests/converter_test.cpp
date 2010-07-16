@@ -30,4 +30,10 @@ void ConverterTest::TestConversion()
 
 	UnicodeString ouml = ConvertString("\xF6");
 	CPPUNIT_ASSERT_EQUAL(std::string("\xC3\xB6"), AsUtf8(ouml));
+
+	std::string plAsIso = "pl \xF6:asdf";
+	std::string plAsUtf8 = "pl \xC3\xB6:asdf";
+
+	UnicodeString plAsUnicode = ConvertString(plAsUtf8);
+	CPPUNIT_ASSERT_EQUAL(plAsUtf8, AsUtf8(plAsUnicode));
 }
