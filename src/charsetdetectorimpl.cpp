@@ -1,11 +1,13 @@
 #include "charsetdetectorimpl.hpp"
 #include "charsetdetectorexception.hpp"
 
-CharsetDetectorImpl::CharsetDetectorImpl(const std::string& input)
+#include <boost/thread/locks.hpp>
+
+CharsetDetectorImpl::CharsetDetectorImpl()
 	: detector_(0)
-	, input_(input.begin(), input.end())
-	, inputSize_(input.size())
 {
+	boost::lock_guard<boost::mutex> lock(detectorMutex_);
+
 	if (chardet_create(&detector_) != CHARDET_RESULT_OK)
 		throw CharsetDetectorException(
 			"Could not create character detector, out of memory");
@@ -13,16 +15,21 @@ CharsetDetectorImpl::CharsetDetectorImpl(const std::string& input)
 
 CharsetDetectorImpl::~CharsetDetectorImpl()
 {
+	boost::lock_guard<boost::mutex> lock(detectorMutex_);
+
 	if (detector_ != 0)
 		chardet_destroy(detector_);
 }
 
-const std::string& CharsetDetectorImpl::GetCharsetName()
+std::string CharsetDetectorImpl::GetCharsetName(const std::string& input)
 {
-	if (detectedCharset_.size() > 0)
-		return detectedCharset_;
+	boost::lock_guard<boost::mutex> lock(detectorMutex_);
+
+	int err = chardet_reset(detector_);
+	if (err != CHARDET_RESULT_OK)
+		throw CharsetDetectorException("Could not reset charset detector");
 	
-	int err = chardet_handle_data(detector_, &input_[0], input_.size());
+	err = chardet_handle_data(detector_, input.c_str(), input.size());
 	if (err != CHARDET_RESULT_OK)
 		throw CharsetDetectorException(
 			"Could not feed data to charset detector");
@@ -38,17 +45,7 @@ const std::string& CharsetDetectorImpl::GetCharsetName()
 		throw new CharsetDetectorException(
 			"Could not get the charset for the given input");
 	if (buffer[0] == 0)
-		detectedCharset_ = "UTF-8";
-	else
-		detectedCharset_ = &buffer[0];
-	return detectedCharset_;
-}
+		return "UTF-8";
 
-const CharsetDetectorImpl::CharsetCollection&
-CharsetDetectorImpl::GetAllCharsetNames()
-{
-	if (allDetectedCharsets_.size() == 0)
-		allDetectedCharsets_.push_back(GetCharsetName());
-
-	return allDetectedCharsets_;
+	return &buffer[0];
 }

@@ -5,6 +5,8 @@
 
 #include <boost/shared_ptr.hpp>
 
+#include <unicode/unistr.h>
+
 class CharsetDetectorImpl;
 typedef boost::shared_ptr<CharsetDetectorImpl> CharsetDetectorImplPtr;
 
@@ -14,10 +16,10 @@ public:
 	typedef std::vector<std::string> CharsetCollection;
 	typedef CharsetCollection::const_iterator CharsetIterator;
 
-	explicit CharsetDetector(const std::string& input);
-	
-	const std::string& GetCharsetName();
-	const CharsetCollection& GetAllCharsetNames();
+	CharsetDetector();
+
+	UnicodeString AsUnicode(const std::string& input);
+	std::string GetCharsetName(const std::string& input);
 private:
 	CharsetDetectorImplPtr impl_;
 };

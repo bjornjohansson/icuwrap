@@ -5,6 +5,8 @@
 #include <vector>
 #include <string>
 
+#include <boost/thread/mutex.hpp>
+
 class CharsetDetector;
 
 class CharsetDetectorImpl
@@ -15,17 +17,15 @@ public:
 	
 	virtual ~CharsetDetectorImpl();
 	
-	const std::string& GetCharsetName();
-	const CharsetCollection& GetAllCharsetNames();
+	std::string GetCharsetName(const std::string& input);
 private:
-	CharsetDetectorImpl(const std::string& input);
+	CharsetDetectorImpl();
+	CharsetDetectorImpl(const CharsetDetectorImpl&);
+	CharsetDetectorImpl& operator=(const CharsetDetectorImpl&);
 	
-	chardet_t detector_;
+	boost::mutex detectorMutex_;
 
-	std::vector<char> input_;
-	size_t inputSize_;
-	std::string detectedCharset_;
-	CharsetCollection allDetectedCharsets_;
+	chardet_t detector_;
 
 	friend class CharsetDetector;
 };

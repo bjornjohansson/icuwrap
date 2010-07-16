@@ -3,17 +3,17 @@
 
 #include <chardet.h>
 
-CharsetDetector::CharsetDetector(const std::string& input)
-	: impl_(new CharsetDetectorImpl(input))
+CharsetDetector::CharsetDetector()
+	: impl_(new CharsetDetectorImpl)
 {
 }
 
-const std::string& CharsetDetector::GetCharsetName()
+std::string CharsetDetector::GetCharsetName(const std::string& input)
 {
-	return impl_->GetCharsetName();
+	return impl_->GetCharsetName(input);
 }
 
-const CharsetDetector::CharsetCollection& CharsetDetector::GetAllCharsetNames()
+UnicodeString CharsetDetector::AsUnicode(const std::string & input)
 {
-	return impl_->GetAllCharsetNames();
+	return UnicodeString(input.c_str(), impl_->GetCharsetName(input).c_str());
 }

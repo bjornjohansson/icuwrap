@@ -1,18 +1,18 @@
 sourceFiles = ['globalicu.cpp'
+              ,'converter.cpp'
               ,'charsetdetector.cpp'
               ,'charsetdetectorimpl.cpp'
-              ,'uconverter.cpp'
-              ,'unistring.cpp'
               ]
 
 botFiles = [
            ]
 
 testFiles = ['tests/run.cpp'
-            ,'tests/unistring_test.cpp'
+            ,'tests/converter_test.cpp'
             ]
 
 libFiles = ['chardet'
+           ,'boost_thread-mt'
            ]
 
 testLibFiles = ['cppunit'
