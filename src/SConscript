@@ -15,6 +15,11 @@ testFiles = ['tests/run.cpp'
 
 libFiles = ['chardet'
            ,'boost_thread-mt'
+           ,'dl'
+           ,'m'
+           ,'icui18n'
+           ,'icuuc'
+           ,'icudata'
            ]
 
 testLibFiles = ['cppunit'

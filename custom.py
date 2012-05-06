@@ -1,4 +1,4 @@
-CPPFLAGS = '`icu-config --cppflags` -Wall -pedantic-errors'
-LINKFLAGS = '`icu-config --ldflags`'
+CPPFLAGS = '-std=c++11 `icu-config --cppflags` -Wall -pedantic-errors'
+LINKFLAGS = ''
 CPPDEFINES = []
 LIBPATH = []

@@ -22,6 +22,8 @@ public:
 	UniString(const std::string& input);
 	// Read an input string using the supplied encoding
 	UniString(const std::string& input, const std::string& encoding);
+	// Copy contruct a UnicodeString object
+	explicit UniString(const UnicodeString& input);
 
 	std::string ToUtf8() const;
 	
@@ -43,6 +45,31 @@ public:
 
 	inline const std::string& GetDetectedCharset() const
 		{ return detectedCharset_; }
+
+	inline UniString SubString(int32_t start, int32_t length=INT32_MAX) const
+		{
+			UniString result;
+			string_.extract(start,
+			                length == INT32_MAX ? string_.length() : start+length,
+			                result);
+			return result;
+		}
+
+	inline int32_t Find(const UniString& text, int32_t start = 0) const
+		{
+			int32_t position = string_.indexOf(*text, start);
+			if (position == -1)
+				return INT32_MAX;
+			return position;
+		}
+
+	inline int32_t Find(UChar c, int32_t start = 0) const
+		{
+			int32_t position = string_.indexOf(c, start);
+			if (position == -1)
+				return INT32_MAX;
+			return position;
+		}
 	
 private:
 	void ConvertToCharset(const std::string& input);

@@ -19,29 +19,14 @@ UniString::UniString(const std::string& input)
 {
 	try
 	{
-		CharsetDetector detector(input);
+		CharsetDetector detector;
 
-		const CharsetDetector::CharsetCollection& sets
-			= detector.GetAllCharsetNames();
-		
-		CharsetDetector::CharsetIterator utf8 =
-			std::find(sets.begin(), sets.end(), "UTF-8");
-		CharsetDetector::CharsetIterator iso88591
-			= std::find(sets.begin(), sets.end(), "ISO-8859-1");
-		
-		// By default we use ISO-8859-1
-		detectedCharset_ = "ISO-8859-1";
-		// If we find UTF-8 but not ISO-8859-1 then we go with UTF-8
-		if (utf8 != sets.end() && iso88591 == sets.end())
-		{
-			detectedCharset_ = "UTF-8";
-		}
+		string_ = detector.AsUnicode(input);
 	}
 	catch (const CharsetDetectorException& e)
 	{
 		throw UniStringException(e.GetMessage());
 	}
-	ConvertToCharset(input);
 }
 
 UniString::UniString(const std::string& input, const std::string& encoding)
@@ -49,6 +34,12 @@ UniString::UniString(const std::string& input, const std::string& encoding)
 {
 	ConvertToCharset(input);
 }
+
+UniString::UniString(const UnicodeString& input)
+	: string_(input)
+{
+}
+
 
 void UniString::ConvertToCharset(const std::string& input)
 {
