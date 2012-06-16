@@ -1,0 +1,3 @@
+This is just a thin wrapper around libchardet
+(https://github.com/cnangel/libchardet) and ICU (http://icu-project.org/)
+to make life a little easier.
